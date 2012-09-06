@@ -19,6 +19,14 @@ class UsingMoxDatetimeTest(mox.MoxTestBase):
         self.assertEqual(self._callFUT(), 10)
 
     def test2(self):
+        """datetime.datetimeをモックに置き換えると後に実行されたテストがおかしくなることを示す例。
+
+        このテストはtest1の後に呼ばれる。
+        全く同じことをしているのに失敗する。
+
+        NOTE: datetime.datetimeをモックに置き換えることが良くない。
+              => mydatetime.datetimeを置き換えれば良い。
+        """
         self.mox.StubOutWithMock(datetime, "datetime")
         datetime.datetime.now().AndReturn(10)
         self.mox.ReplayAll()
