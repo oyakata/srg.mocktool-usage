@@ -9,9 +9,6 @@ class UsingMockDatetimeTest(unittest.TestCase):
         return mydatetime.now()
 
     def test(self):
-        # ここでmydatetimeをインポートすると失敗する。
-        # AssertionError: datetime.datetime(2012, 9, 5, 10, 42, 3, 984193) != 10
-        # import mydatetime 
         with mock.patch("datetime.datetime") as M:
             M.now.return_value = 10
             self.assertEqual(self._callFUT(), 10)

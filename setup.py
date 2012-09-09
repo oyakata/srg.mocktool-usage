@@ -1,9 +1,9 @@
 # -*- coding:utf-8 -*-
-from setuptools import setup, find_package
+from setuptools import setup, find_packages
 
 
 version = "0.1"
-requirements = ["mock", "mox", "minimock"]
+requirements = ["mock", "mox", "minimock", "flake8"]
 
 
 def main():
@@ -12,7 +12,7 @@ def main():
         version=version,
         description="Python2.x mock tool usage.",
         install_requires=requirements,
-        packages=find_package("src"),
+        packages=find_packages("src"),
         package_dir={"": "src"},
         author='Imagawa Yakata',
         author_email='imagawa.yakata@gmail.com',

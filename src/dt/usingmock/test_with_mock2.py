@@ -7,8 +7,6 @@ import mydatetime
 
 class UsingMockDatetimeTest2(unittest.TestCase):
     def test(self):
-        # TODO: 単独で失敗する例は別のファイルに移す。
-        #       このファイルはtest_with_mock.pyと一緒に実行するとテストが失敗するようになる副作用の説明にのみ使う。
         # mydatetime.datetimeにパッチを当てるなら
         # mydatetimeをトップレベルでインポートしても大丈夫。
         # やはりdatetime.datetimeに手を入れるのが間違いのようだ。
@@ -19,13 +17,17 @@ class UsingMockDatetimeTest2(unittest.TestCase):
         # nowをモックに置き換えようとするとエラーになる。
         # nowではなくdatetimeの方を置き換えるのが正解。
         with self.assertRaises(TypeError):
-            # TypeError: can't set attributes of built-in/extension type 'datetime.datetime'
+            # TypeError:
+            #   can't set attributes of
+            #   built-in/extension type 'datetime.datetime'
             with mock.patch("datetime.datetime.now") as M2:
                 M2.return_value = 77
                 self.assertEqual(mydatetime.now(), 77)
 
         with self.assertRaises(TypeError):
-            # TypeError: can't set attributes of built-in/extension type 'datetime.datetime'
+            # TypeError:
+            #   can't set attributes
+            #   of built-in/extension type 'datetime.datetime'
             with mock.patch("mydatetime.datetime.now") as M3:
                 M3.return_value = 77
                 self.assertEqual(mydatetime.now(), 77)

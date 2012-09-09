@@ -1,37 +1,38 @@
 # -*- coding:utf-8 -*-
+import datetime
 import unittest
-from datetime import datetime
 import mox
 
 
-"""
-moxとmockだったらmockの方が良さそうだ。
+class UsingMoxDatetimeTest(mox.MoxTestBase):
+    def tearDown(self):
+        self.mox.ResetAll()
 
-理由は
-
-1. moxは必ずReplayAll(, VerifyAll)を要求される。
-   mockはわざわざリプレイモードに切り替える必要がない。
-   また、Verifyは必要だと思ったときだけ利用可能。
-2. デコレータやコンテキストマネージャの方が
-   Replay/Verifyを明示的に切り替えるよりもわかりやすい。
-"""
-
-class UsingMoxTest(unittest.TestCase):
-    def setUp(self):
-        now = datetime(2000, 1, 18, 16, 33, 28)
-        def fake():
-            return now
-        self.now = now
-
-        self.mox = mox.Mox()
-        # self.mox.stubs.Set(datetime, "now", fake)
-        import datetime as dt
-        self.mox.StubOutWithMock(dt, "datetime")
-        self.datetime = dt
+    def _callFUT(self):
+        import mydatetime
+        return mydatetime.now()
 
     def test(self):
-        import fut
-        self.datetime.datetime.now().AndReturn(self.now)
+        self.mox.StubOutWithMock(datetime, "datetime")
+        datetime.datetime.now().AndReturn(10)
         self.mox.ReplayAll()
-        self.assertEqual(fut.now(), self.now)
-        self.mox.VerifyAll()
+        self.assertEqual(self._callFUT(), 10)
+
+    def test2(self):
+        """datetime.datetimeをモックに置き換えると後に実行されたテストがおかしくなることを示す例。
+
+        このテストはtest1の後に呼ばれる。
+        全く同じことをしているのに失敗する。
+
+        NOTE: datetime.datetimeをモックに置き換えることが良くない。
+              => mydatetime.datetimeを置き換えれば良い。
+        """
+        self.mox.StubOutWithMock(datetime, "datetime")
+        datetime.datetime.now().AndReturn(10)
+        self.mox.ReplayAll()
+        # AssertionError: <mox.MockMethod object at 0xb739676c> != 10
+        self.assertEqual(self._callFUT(), 10)
+
+
+if __name__ == "__main__":
+    unittest.main()
